@@ -6,20 +6,21 @@ from flask import Flask
 app = Flask(__name__)
 
 DB_HOST = os.environ.get("DB_HOST", "localhost")
+DB_USER = os.environ.get("DB_USER")
 DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
 DB_NAME = os.environ.get("DB_NAME", "esempio")
 
 
 @app.route("/")
 def home():
-    return f"Ciao! DB_HOST={DB_HOST}, DB_NAME={DB_NAME}"
+    return f"Ciao! DB_HOST={DB_HOST}, DB_NAME={DB_NAME}, with DB_USER={DB_USER}"
 
 
 @app.route("/db")
 def db_check():
     connection = pymysql.connect(
         host=DB_HOST,
-        user="root",
+        user=DB_USER,
         password=DB_PASSWORD,
         database=DB_NAME,
     )
