@@ -16,7 +16,9 @@ services:
       retries: 10
 
   backend:
-    build: .
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: esempio-flask
     environment:
       DB_HOST: db
@@ -30,8 +32,8 @@ services:
 
   nginx:
     build:
-    content: ./nginx
-    dockerfile: Dockerfile
+      context: ./nginx
+      dockerfile: Dockerfile
     container_name: esempio-nginx 
     ports:
       - "8080:80"
