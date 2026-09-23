@@ -1,0 +1,46 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: esempio-db
+    # ports:
+    #   - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: segreta
+      MYSQL_DATABASE: esempio
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-psegreta"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: esempio-flask
+    environment:
+      DB_HOST: db
+      DB_PASSWORD: segreta
+      DB_NAME: esempio
+    volumes:
+      - uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: esempio-nginx 
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  uploads:
+  mysql-data:
+    external: true
